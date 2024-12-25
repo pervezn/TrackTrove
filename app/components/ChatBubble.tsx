@@ -4,9 +4,10 @@ type ChatBubbleProps = {
     role: 'User' | 'AI';
   };
   
-  export default function ChatBubble({ key, content, role }: ChatBubbleProps) {
+  export default function ChatBubble({content, role }: ChatBubbleProps) {
+
     return (
-      <div key={key} className="flex flex-col gap-1 w-fit max-w-[410px] mb-4">
+      <div className="flex flex-col gap-1 w-fit max-w-[410px] mb-4">
         <div className="flex items-center space-x-2 rtl:space-x-reverse">
           <span className="text-sm font-semibold text-gray-900 dark:text-white">
             {role}
