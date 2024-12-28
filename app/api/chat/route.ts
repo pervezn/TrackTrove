@@ -37,18 +37,12 @@ export async function POST(req: Request) {
     
     // Clean the result to remove any unwanted labels like "Output: "
     const cleanedResult = result.text.replace(/^Output:\s*/, '').trim();
-
-
-    // Parse the structured response (now cleaned)
     const parsedResponse = JSON.parse(cleanedResult);
-    // console.log("Parsed Response:", parsedResponse);
-
     const searchQuery = buildSpotifyQuery(parsedResponse);
-    // console.log("search query", searchQuery); // Output: "genre:bollywood year:1980-1989 artist:"kishore kumar" chill"
   
     // Append to Spotify Search API
-    const spotifyUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track`;
-    console.log(spotifyUrl);
+    // const spotifyUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track`;
+    // console.log(spotifyUrl);
 
     // Build absolute URL
     const baseUrl = req.headers.get("host"); // Get host (e.g., localhost:3000 or example.com)
@@ -65,9 +59,6 @@ export async function POST(req: Request) {
     console.log("spotify results", spotifyResults)
 
     return new Response(JSON.stringify(spotifyResults), { status: 200 });
-
-    // return new Response(JSON.stringify(parsedResponse), { status: 200 });
-
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error processing the request:", error.message);

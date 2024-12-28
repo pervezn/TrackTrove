@@ -1,11 +1,12 @@
-export default async function handler(req, res) {
-  const { query } = req.query;
+import { NextApiRequest, NextApiResponse } from "next";
+
+export default async function handler(req:NextApiRequest, res: NextApiResponse) {
+  const query = Array.isArray(req.query.query) ? req.query.query[0] : req.query.query;
+
 
   if (!query) {
     return res.status(400).json({ error: "Query parameter is required" });
   }
-  console.log("SPOTIFY_CLIENT_ID:", process.env.SPOTIFY_CLIENT_ID);
-  console.log("SPOTIFY_CLIENT_SECRET:", process.env.SPOTIFY_CLIENT_SECRET);
   
   try {
     // Step 1: Get Client Access Token
@@ -53,8 +54,13 @@ export default async function handler(req, res) {
     // Return search results to the client
     return res.status(200).json(searchResults);
 
-  } catch (error) {
-    console.error("Error in Spotify Search:", error.message);
-    return res.status(500).json({ error: "Internal Server Error" });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error in Spotify Search:", error.message);
+      return res.status(500).json({ error: error.message });
+    } else {
+      console.error("Unknown error:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
   }
 }
