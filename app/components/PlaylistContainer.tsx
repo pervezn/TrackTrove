@@ -1,10 +1,16 @@
+import { playlistDataState } from "@/atoms/playlistDataAtom";
+import { PlaylistData, PlaylistDataItem } from "@/types/playlistDataTypes";
+import { Key } from "lucide-react";
 import Image from "next/image"
+import { useEffect } from "react"
+import { RecoilState } from "recoil";
 
 const tracklist = [1,2,3,4,5,6,7]
 
 
 
 export const PlaylistGenerator = () => {
+
      return (
         <div className="w-full justify-center">
             <PlaylistHeader />
@@ -15,6 +21,7 @@ export const PlaylistGenerator = () => {
 
 
 export const PlaylistHeader = () => {
+
     return (
         <div className="flex flex-row items-center gap-4 p-4">
             <div className="font-bold text-white text-xl">Title</div>
@@ -27,6 +34,8 @@ export const PlaylistHeader = () => {
 }
 
 export const TrackContainer = () => {
+    // const playlistData = useRecoilValue(playlistDataState)
+
     return (
         <div>
             <div className="flex flex-row gap-4 p-4 text-gray-400">
@@ -39,14 +48,18 @@ export const TrackContainer = () => {
 
             {/* Track list */}
             <div>
-                {tracklist.map((track) => (
-                    <Track key={track} />
-                ))}
+                {/* {playlistData.map(( track: PlaylistDataItem) => (
+                    <Track key={track.spotifyLink} track={track} />
+                ))} */}
+                {tracklist.map((track) => <Track key={track} />)}
             </div>
         </div>
     );
-}
+};
 
+interface TrackProps {
+    track: PlaylistDataItem; // Accepts a track of type PlaylistDataItem
+}
 
 export const Track = () => {
     return (
@@ -58,19 +71,23 @@ export const Track = () => {
             <div className="flex items-center w-4/12">
                 <Image alt="track-img" src="" width={40} height={40} className="rounded-full" />
                 <div className="ml-4 flex flex-col">
-                    <div className="font-semibold text-white">Song name</div>
-                    <div className="text-gray-400">Artists names</div>
+                    {/* <div className="font-semibold text-white">{track.trackName}</div> */}
+                    {/* <div className="text-gray-400">{track.artists}</div> */}
                 </div>
             </div>
 
             {/* Album name */}
-            <div className="w-2/12 text-white">Album name</div>
+            {/* <div className="w-2/12 text-white">{track.albumName}</div> */}
 
             {/* Date added */}
             <div className="w-2/12 text-center text-gray-400">May 5, 2024</div>
 
             {/* Track length */}
-            <div className="w-2/12 text-center text-gray-400">5:30</div>
+            {/* <div className="w-2/12 text-center text-gray-400">{track.duration}</div> */}
         </div>
     );
 }
+function useRecoilValue(playlistDataState: RecoilState<never[]>) {
+    throw new Error("Function not implemented.");
+}
+

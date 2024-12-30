@@ -46,7 +46,28 @@ export function buildSpotifyQuery({ genre, era, artist, mood } : {genre: string,
     const query = queryParts.join(" ");
     return query;
 }
-  
+
+export function processSpotifyResponse(response: { tracks: { items: any[]; }; }) {
+  const tracks = response.tracks.items.map(track => {
+      return {
+          trackName: track.name,
+          artists: track.artists.map((artist: { name: any; }) => artist.name).join(', '),
+          albumName: track.album.name,
+          albumArt: track.album.images[0]?.url || '', // Use the largest image
+          duration: formatDuration(track.duration_ms),
+          spotifyLink: track.external_urls.spotify
+      };
+  });
+
+  return tracks;
+}
+
+function formatDuration(durationMs: number) {
+  const minutes = Math.floor(durationMs / 60000);
+  const seconds =((durationMs % 60000) / 1000).toFixed(0);
+  return `${minutes}:${Number(seconds) < 10 ? '0' : ''}${seconds}`;
+}
+
 //   // Example Usage
 //   const userInputData = {
 //     genre: "bollywood",

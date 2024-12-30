@@ -1,9 +1,45 @@
+import { playlistDataState } from "@/atoms/playlistDataAtom";
 import ChatBubble from "./ChatBubble";
 import { useChat } from 'ai/react';
+import { useRecoilState } from "recoil";
 
 export function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, handleInputChange, handleSubmit: baseHandleSubmit } = useChat();
+  const [playlistData, setPlaylistData] = useRecoilState(playlistDataState); // Use Recoil state
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); 
+    
+    await baseHandleSubmit(e);
 
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Make sure to send as JSON
+        },
+        body: JSON.stringify({ input }), // Send input as JSON
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate playlist");
+      }
+
+      const data = await response.json();
+      
+      // Check that data is an array of PlaylistItem
+      if (Array.isArray(data)) {
+        setPlaylistData(data); // Store playlist data in Recoil state
+      } else {
+        console.error("Invalid response format:", data);
+      }
+    } catch (error) {
+      console.error("Error generating playlist:", error);
+    }
+  };
+
+  console.log(playlistData);
+  
   return (
     <div className="flex flex-col w-full max-w-md pt-24 mx-auto">
       <h4 className="text-xl font-bold md:text-xl pb-4 text-white">

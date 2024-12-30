@@ -1,6 +1,8 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
-import { buildSpotifyQuery } from "../spotify/search";
+import { buildSpotifyQuery, processSpotifyResponse } from "../spotify/search";
+import {playlistDataState } from "../../../atoms/playlistDataAtom"
+import { useRecoilState } from "recoil";
 
 
 const openai = createOpenAI({
@@ -11,6 +13,7 @@ const openai = createOpenAI({
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
+  // const [playlistData, setPlaylistData] = useRecoilState<>(playlistDataState)
   try {
     const userInput  = await req.text();
 
@@ -56,7 +59,9 @@ export async function POST(req: Request) {
     }
 
     const spotifyResults = await response.json();
-    console.log("spotify results", spotifyResults)
+
+    const processedResponse = processSpotifyResponse(spotifyResults)
+    console.log("spotify results", processedResponse)
 
     return new Response(JSON.stringify(spotifyResults), { status: 200 });
   } catch (error) {
