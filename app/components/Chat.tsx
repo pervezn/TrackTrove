@@ -1,3 +1,5 @@
+'use client'
+
 import { playlistDataState } from "@/atoms/playlistDataAtom";
 import ChatBubble from "./ChatBubble";
 import { useChat } from 'ai/react';
@@ -5,7 +7,7 @@ import { useRecoilState } from "recoil";
 
 export function Chat() {
   const { messages, input, handleInputChange, handleSubmit: baseHandleSubmit } = useChat();
-  const [playlistData, setPlaylistData] = useRecoilState(playlistDataState); // Use Recoil state
+  const [playlistData, setPlaylistData] = useRecoilState(playlistDataState); 
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
@@ -26,10 +28,8 @@ export function Chat() {
       }
 
       const data = await response.json();
-      
-      // Check that data is an array of PlaylistItem
-      if (Array.isArray(data)) {
-        setPlaylistData(data); // Store playlist data in Recoil state
+      if (data) {
+        setPlaylistData(data);
       } else {
         console.error("Invalid response format:", data);
       }

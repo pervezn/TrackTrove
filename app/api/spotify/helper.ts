@@ -55,8 +55,7 @@ export function processSpotifyResponse(response: { tracks: { items: any[]; }; })
           albumName: track.album.name,
           albumArt: track.album.images[0]?.url || '', // Use the largest image
           duration: formatDuration(track.duration_ms),
-          spotifyLink: track.external_urls.spotify,
-          id: track.id
+          spotifyLink: track.external_urls.spotify
       };
   });
 

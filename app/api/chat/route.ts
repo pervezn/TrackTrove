@@ -1,8 +1,6 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import { buildSpotifyQuery, processSpotifyResponse } from "../spotify/search";
-import {playlistDataState } from "../../../atoms/playlistDataAtom"
-import { useRecoilState } from "recoil";
 
 
 const openai = createOpenAI({
@@ -42,10 +40,6 @@ export async function POST(req: Request) {
     const cleanedResult = result.text.replace(/^Output:\s*/, '').trim();
     const parsedResponse = JSON.parse(cleanedResult);
     const searchQuery = buildSpotifyQuery(parsedResponse);
-  
-    // Append to Spotify Search API
-    // const spotifyUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track`;
-    // console.log(spotifyUrl);
 
     // Build absolute URL
     const baseUrl = req.headers.get("host"); // Get host (e.g., localhost:3000 or example.com)
@@ -61,14 +55,14 @@ export async function POST(req: Request) {
     const spotifyResults = await response.json();
 
     const processedResponse = processSpotifyResponse(spotifyResults)
-    console.log("spotify results", processedResponse)
+    console.log("spotify results", spotifyResults)
 
-    return new Response(JSON.stringify(spotifyResults), { status: 200 });
+
+    return new Response(JSON.stringify(processedResponse), { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error processing the request:", error.message);
 
-      // Return a meaningful error response to the client
       return new Response(
         JSON.stringify({
           error: "An error occurred while processing your request. Please try again later.",
@@ -77,7 +71,6 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     } else {
-      // Handle unexpected non-Error objects
       console.error("Unexpected error:", error);
 
       return new Response(

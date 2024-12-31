@@ -5,8 +5,9 @@ export interface PlaylistDataItem {
     albumArt: string;
     duration: string;
     spotifyLink: string;
+    id: string;
 }
 
 export interface PlaylistData {
-    data: PlaylistDataItem[];
+    tracks: PlaylistDataItem[];
 }

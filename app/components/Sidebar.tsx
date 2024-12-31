@@ -2,12 +2,14 @@ import { AppSidebar } from "@/components/app-sidebar"
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Chat } from "./Chat"
 import { PlaylistGenerator } from "./PlaylistContainer"
+import { playlistDataState } from "@/atoms/playlistDataAtom";
+import { useRecoilValue } from "recoil";
 
 export default function Sidebar() {
+  const playlistData = useRecoilValue(playlistDataState);
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -17,7 +19,7 @@ export default function Sidebar() {
                 <Chat />
             </div>
             <div className="flex flex-row justify-center">
-                <PlaylistGenerator />
+               {playlistData.length === 0 ? null : <PlaylistGenerator />}
             </div>
         </div>
       </SidebarInset>

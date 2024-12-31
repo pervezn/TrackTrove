@@ -6,13 +6,13 @@ import { RecoilRoot } from 'recoil'
 
 export default function Home() {
   return (
-    <main >
+    <main>
       <RecoilRoot>
         <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem
-            disableTransitionOnChange
+            // disableTransitionOnChange
             >
             <Sidebar />
         </ThemeProvider>
