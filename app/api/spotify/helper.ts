@@ -1,3 +1,4 @@
+import { PlaylistData, PlaylistDataItem } from "@/types/playlistDataTypes";
 
 export function buildSpotifyQuery({ genre, era, artist, mood } : {genre: string, era: string, artist: string, mood:string}) {
     let queryParts = [];
@@ -68,19 +69,46 @@ function formatDuration(durationMs: number) {
   return `${minutes}:${Number(seconds) < 10 ? '0' : ''}${seconds}`;
 }
 
-//   // Example Usage
-//   const userInputData = {
-//     genre: "bollywood",
-//     era: "80s",
-//     artist: "kishore kumar",
-//     mood: "chill",
-//   };
-  
-//   const searchQuery = buildSpotifyQuery(userInputData);
-//   console.log(searchQuery); // Output: "genre:bollywood year:1980-1989 artist:"kishore kumar" chill"
-  
-//   // Append to Spotify Search API
-//   const spotifyUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchQuery)}&type=track`;
-//   console.log(spotifyUrl);
 
+export function calcPlaylistTotalLength(playlistData: PlaylistDataItem[]) {
+  let totalMS = 0;
   
+  const convertToMilliseconds = (duration: string): number => {
+    const parts = duration.split(':');
+    let totalSeconds = 0;
+
+    if (parts.length === 2) {
+      // Format: mm:ss
+      const minutes = parseInt(parts[0], 10);
+      const seconds = parseInt(parts[1], 10);
+      totalSeconds = minutes * 60 + seconds;
+    } else if (parts.length === 3) {
+      // Format: hh:mm:ss
+      const hours = parseInt(parts[0], 10);
+      const minutes = parseInt(parts[1], 10);
+      const seconds = parseInt(parts[2], 10);
+      totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    }
+
+    return totalSeconds * 1000; // Convert seconds to milliseconds
+  };
+
+  // Summing the durations of each track
+  playlistData.forEach((track) => {
+    totalMS += convertToMilliseconds(track.duration);
+  });
+  
+  // Convert totalMS to hours, minutes, and seconds
+  const totalSeconds = totalMS / 1000;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const remainingSeconds = Math.floor(totalSeconds % 60);
+
+  // Check if total duration is more than an hour
+  if (totalMinutes >= 60) {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours} hrs ${minutes} min`;
+  } else {
+    return `${totalMinutes} min ${remainingSeconds} secs`;
+  }
+}
